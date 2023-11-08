@@ -22,19 +22,30 @@ openssl enc -d -aes-256-cbc -pbkdf2 -in encrypted.bin -out decrypted.txt -pass f
 
 ```bash
 openssl genrsa -out private.key 2048
+# Извлечение публичного ключа из приватного ключа
 openssl rsa -in private.key -out public.key -outform PEM -pubout
 
 #or with PEM pass phrase
 openssl genpkey -algorithm RSA -out private_key.pem -aes256
+# Извлечение публичного ключа из приватного ключа
 openssl rsa -pubout -in private_key.pem -out public_key.pem
+
 #or without PEM pass phrase
 openssl genpkey -algorithm RSA -out private_key.pem
+# Извлечение публичного ключа из приватного ключа
 openssl rsa -pubout -in private_key.pem -out public_key.pem
 
 #encrypt file
 openssl rsautl -encrypt -pubin -inkey public_key.pem -in input.txt -out encrypted.txt
 #decrypt file
 openssl rsautl -decrypt -inkey private_key.pem -in encrypted.txt -out decrypted.txt
+
+#signature
+openssl dgst -sha256 -sign private_key.pem -out signature.bin input.txt
+#verify
+openssl dgst -sha256 -verify public_key.pem -signature signature.bin input.txt
+#verify in file
+openssl dgst -sha256 -verify public_key.pem -signature signature.bin -out verified.txt input.txt
 ```
 
 ### Create asymmetric DSA keys:
@@ -42,6 +53,7 @@ openssl rsautl -decrypt -inkey private_key.pem -in encrypted.txt -out decrypted.
 ```bash
 openssl dsaparam -out dsaparam.pem 2048
 openssl gendsa -out private_dsa.pem dsaparam.pem
+# Извлечение публичного ключа из приватного ключа
 openssl dsa -in private_dsa.pem -pubout -out public_dsa.pem
 
 #signature
@@ -56,6 +68,7 @@ openssl dgst -verify public_dsa.pem -signature signature.bin -out verified.txt i
 
 ```bash
 openssl ecparam -name secp256k1 -genkey -out private_ecdsa.pem
+# Извлечение публичного ключа из приватного ключа
 openssl ec -in private_ecdsa.pem -pubout -outform PEM -out public_ecdsa.pem
 
 #signature
