@@ -11,6 +11,8 @@ openssl rand -base64 32
 
 #in file
 openssl rand -base64 32 > symmetric_key
+#
+openssl rand -out symmetric_key 32
 
 #encrypt file
 openssl enc -aes-256-cbc -salt -pbkdf2 -in input.txt -out encrypted.bin -pass file:symmetric_key
